@@ -196,6 +196,50 @@
             align-items: center;
         }
 
+        .loader,
+        .loader:after {
+            border-radius: 50%;
+            width: 10em;
+            height: 10em;
+        }
+        .loader {
+            margin: 60px auto;
+            font-size: 10px;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(28,28,28, 0.2);
+            border-right: 1.1em solid rgba(28,28,28, 0.2);
+            border-bottom: 1.1em solid rgba(28,28,28, 0.2);
+            border-left: 1.1em solid #1c1c1c;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 1.1s infinite linear;
+        }
+        @-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -204,6 +248,11 @@
 
         <div class="text-center">
             <h1 class="d-none" id="header">Welcome <strong id="name"></strong></h1>
+            <h2 id = "password_notice" class="d-none">1 passed since the last password change. Please consider changing it in 29 days to ensure protection.</h2>
+            <div class="loaders">
+                <div class="loader">Loading...</div>
+                <p>Fetching password information</p>
+            </div>
             <button class="button ripple" id="button_logout"  data-ripple-color="white" ontouchstart="return true;">LOGOUT</button>
         </div>
     </div>
@@ -231,6 +280,24 @@
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
+    async function checkPassword(url){
+        token = getLocal('local-auth-tk');
+        token = token.slice(1, -1)
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + token);
+        myHeaders.append("Accept", "application/json");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        return await fetch(url, requestOptions)
+    }
+
+
     $(document).ready(function (){
 
         $('#button_logout').click(function () {
@@ -240,6 +307,19 @@
                     window.location.href = '/auth/login?ret=/app/helloworld'
                 }
             })
+        })
+
+        const pwdRes = checkPassword(`${baseURL}/api/v3/app/password-time`);
+
+        pwdRes.then(async response => {
+            if(response.status > 300) {
+                // window.location.href = '/auth/login?ret=/app/helloworld'
+            }else {
+                dt = await response.json();
+                $(".loaders").hide();
+                $("#password_notice").html(dt['result']).fadeIn()
+
+            }
         })
     })
 </script>
