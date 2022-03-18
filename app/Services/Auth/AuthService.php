@@ -17,11 +17,10 @@ class AuthService
             ->where('successful', false)
             ->where('created_at', ">=", Carbon::now()->subMinutes(5))->count();
 
-        if($attempts > 4 ) {
+        if($attempts >= 4 ) {
             $latest_attempt = $this->getLatestAttempt();
             if ($latest_attempt && Carbon::now()->lte($latest_attempt->created_at->addMinutes(5))) return 'too_many_attempts';
         }
-
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
@@ -52,5 +51,11 @@ class AuthService
             ->where('created_at', ">=", Carbon::now()->subMinutes(5))
             ->latest()
             ->first();
+    }
+
+    public function getLastAttemptCount(): int {
+        return LoginAttempts::where('ip_address', request()->ip())
+            ->where('successful', false)
+            ->where('created_at', ">=", Carbon::now()->subMinutes(5))->count();
     }
 }

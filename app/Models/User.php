@@ -22,7 +22,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'description'
+        'description',
+        'password_since'
     ];
 
     /**
@@ -42,6 +43,8 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password_since' => 'date',
+        'created_at' => 'datetime'
     ];
 
 

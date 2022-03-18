@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,8 @@ class AddAssignedUsers extends Seeder
             "password"=> Hash::make('testing', [
                 'rounds' => 15,
             ]),
-            "description" => "The first user"
+            "description" => "The first user",
+            "password_since" => Carbon::now()
         ];
 
         $user2 = [
@@ -31,7 +33,8 @@ class AddAssignedUsers extends Seeder
             "password"=> Hash::make('MYlittlEM3RM@Aid', [
                 'rounds' => 15,
             ]),
-            "description" => "The second user"
+            "description" => "The second user",
+            "password_since" => Carbon::now()
         ];
 
         $user = User::firstOrCreate($user1);

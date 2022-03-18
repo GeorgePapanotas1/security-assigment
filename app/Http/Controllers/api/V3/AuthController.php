@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ShouldLog;
 use App\Services\Auth\AuthService;
 use Carbon\Carbon;
+use http\Cookie;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\False_;
 
@@ -36,15 +37,14 @@ class AuthController extends Controller
         $token = $this->authService->login();
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized', 'type'=>'invalid', 'retries' => $this->authService->getLastAttemptCount()], 401);
         }
 
         if ($token === 'too_many_attempts') {
             $latest_attempt = $this->authService->getLatestAttempt();
             $secs = Carbon::now()->diffInSeconds($latest_attempt->created_at->addMinutes(5));
-            return response()->json(['error' => "Too many attempts. Retry in $secs seconds."], 401);
+            return response()->json(['error' => "Too many attempts. Retry in $secs seconds.", 'type'=>'blocked'], 401);
         }
-
         return $this->respondWithToken($token);
     }
 
@@ -53,8 +53,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me(Request $request)
     {
+
         return response()->json($this->authService->me());
     }
 
@@ -92,7 +93,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'type'=>'success'
         ]);
     }
 }
