@@ -246,8 +246,8 @@
 
     <div class="h-100 d-flex jcc aic">
 
-        <div class="text-center">
-            <h1 class="d-none" id="header">Welcome <strong id="name"></strong></h1>
+        <div class="text-center d-none" id="header">
+            <h1>Welcome <strong id="name"></strong></h1>
             <h2 id = "password_notice" class="d-none">1 passed since the last password change. Please consider changing it in 29 days to ensure protection.</h2>
             <div class="loaders">
                 <div class="loader">Loading...</div>

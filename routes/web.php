@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->to(route('app.helloworld'));
 });
 
 Route::group([
@@ -37,10 +37,11 @@ Route::group([
 Route::group([
     'prefix' => 'app',
     'middleware' => ['web'],
+    'as' => 'app.',
 ], function () {
     Route::get('/helloworld', function (Request $request){
         return view('protected.helloworld');
-    });
+    })->name('helloworld');
 });
 
 
