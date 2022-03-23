@@ -266,11 +266,11 @@
             createLocal('local-auth-xp', t);
 
             var urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('ret')) {
-                window.location.href = urlParams.get('ret')
-            }else {
-                window.location.href = '/app/helloworld'
-            }
+            // if(urlParams.get('ret')) {
+            //     window.location.href = urlParams.get('ret')
+            // }else {
+            //     window.location.href = '/app/helloworld'
+            // }
 
         })
     })
