@@ -35,7 +35,7 @@ class AuthController extends Controller
     {
 
         $token = $this->authService->login();
-
+        dd($token);
         if (!$token) {
             return response()->json(['error' => 'Unauthorized', 'type'=>'invalid', 'retries' => $this->authService->getLastAttemptCount()], 401);
         }
